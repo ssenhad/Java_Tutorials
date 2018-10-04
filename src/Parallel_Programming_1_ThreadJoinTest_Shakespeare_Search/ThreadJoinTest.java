@@ -50,12 +50,12 @@ public class ThreadJoinTest {
      * This is the main entry point into the program.
      */
     static public void main(String[] args) {
-        System.out.println("Starting SearchStream");
+        System.out.printf("%1$-10s %2$10s","[INFO]","Starting SearchStream\n\n");
 
         // Create/run an object to search for phrases in parallel.
         new SearchOneShotThreadJoin().run();
 
-        System.out.println("Ending SearchStream");
+        System.out.printf("\n\n%1$-10s %2$10s","[INFO]","Ending SearchStream");
     }
 
     /**
@@ -64,33 +64,34 @@ public class ThreadJoinTest {
      * finish.  This implementation requires no Java synchronization
      * mechanisms other than what's provided by the Thread class.
      */
-    static class SearchOneShotThreadJoin
-           implements Runnable {
+    static class SearchOneShotThreadJoin implements Runnable {
         /**
          * This factory method creates a list of threads that will be
          * joined when their processing is done.
          *
          * @param task Function to run in each thread.
-         * @return List of threads that will run the @a task.
+         * @return List of threads that will run the task.
          */
         List<Thread> makeWorkerThreads(Function<String, Void> task) {
             // Create a new list.
             List<Thread> workerThreads = new ArrayList<>();
-
             assert mInputList != null;
-            // Create a thread for each input string to perform
-            // processing designated by the task parameter.
-            mInputList.forEach
-                (input ->
-                 // Add a new thread to the list.
+            // Create a thread for each input string (chunk) to perform
+            // processing designated by the task of type Function parameter.
+            mInputList.forEach(input ->
+                 // Add a new thread to the workerThreads list.
                  workerThreads.add
                  (new Thread(()
-                             // Create lambda runnable to run in
-                             // thread.
+                             // Create lambda runnable to run in thread.
                              ->
-                             // Apply the task to process the input
-                             // string.
+                             // Apply the task of type Function to process the input string.
                              task.apply(input))));
+            /**
+             * task.apply() creates a runnable that provides the computation for each of
+             * the threads. We do not start() the thread here, we merely bind the work to
+             * be done with a thread. This thread with task.apply function will be added
+             * to the workerThreads list.
+             */
 
             return workerThreads;
         }
@@ -106,6 +107,11 @@ public class ThreadJoinTest {
             // they process the input strings.
             List<Thread> workerThreads =
                 makeWorkerThreads(this::processInput);
+
+            /**
+             * this::processInput invokes the processInput method in this class
+             * and it searches for phrases in ONE of the chunks.
+             */
 
             // Iterate through the list of threads and pass a method
             // reference that starts a thread for each input string.
@@ -146,8 +152,7 @@ public class ThreadJoinTest {
                      i != -1;
                      i = input.indexOf(phrase, i + phrase.length()))
 
-                    // Whenever a match is found we print out the
-                    // results.
+                    // Whenever a match is found we print out the output result as follows:
                     System.out.println("in thread " 
                                        + Thread.currentThread().getId()
                                        + " the phrase \""
@@ -161,7 +166,7 @@ public class ThreadJoinTest {
         }
 
         /**
-         * Return the title portion of the @a input.
+         * Return the title portion of the input.
          */
         String getTitle(String input) {
             int endOfTitlePos = input.indexOf('\n');
