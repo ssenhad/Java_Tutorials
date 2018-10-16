@@ -2,13 +2,15 @@ package Buggy_Parallelism;
 
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
-import org.omg.Messaging.SYNC_WITH_TRANSPORT;
+
 
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * This test program is intended to induce race conditions between the produce and consumer
- * threads because no synchronization of object internal states is in place.
+ * threads because no synchronization of object internal states are in place.
+ *
+ * Execute the testBug() method that uses JUNit to demonstrate the bugginess.
  */
 public class BuggyUnsynchronizedBoundedQueueTest {
 
@@ -115,7 +117,7 @@ public class BuggyUnsynchronizedBoundedQueueTest {
         }
     }
 
-    // Run this method to demo the buggy-ness of un-synchronized object states
+    // Run this method to demo the buggy-ness of un-synchronized objects
     @Test(timeout = 10000)
     public void testBug() {
         final BuggyUnsynchronizedBoundedQueue<Integer> buggy =
@@ -134,7 +136,7 @@ public class BuggyUnsynchronizedBoundedQueueTest {
             for (Thread t : threads) t.join();
 
             System.out.println("Test ran in "
-                    + (System.nanoTime() - startTime)/ 1_000_000
+                    + (System.nanoTime() - startTime)/ 1000000
                     + " msecs");
 
         } catch (Exception e) {
