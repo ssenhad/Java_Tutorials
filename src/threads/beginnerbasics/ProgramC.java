@@ -1,4 +1,4 @@
-package beginnerbasics;
+package threads.beginnerbasics;
 
 public class ProgramC {
 
