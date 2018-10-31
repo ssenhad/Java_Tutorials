@@ -24,4 +24,20 @@ Note that custom conditional annotations can also be used as a meta-annotation i
 Each of the conditional annotations listed in the following sections can only be declared once on a given test interface, test class, or test method.If a conditional annotation is directly present, indirectly present, or meta-present multiple times on a given element, only the first such annotation discovered by JUnit will be used; any additional declarations will be silently ignored. Note, however, that each conditional annotation may be used in conjunction with other conditional annotations in the org.junit.jupiter.api.condition package.
 
 ## 7.1 Operating system conditions
-A container or test may be enabled or disabled on a particular operating system by using the @EnabledOnOs or @DisabledOnOs annotations.
+A container or test may be enabled or disabled on a particular operating system by using the @EnabledOnOs or @DisabledOnOs annotations. See ConditionalTestExecution.java which also shows how custom combined annotations can be constructed with an @interface *interfacename*; where the annotation for some test method takes on *interfacename* as the annotation signature. The interface itself will specify the @Test annotation, along with other neceassary annotations for the test method such as @EnabledOnOs(MAC). The custom annotation is a single, reusable annotation.
+
+## 7.2 Java runtime environment conditions
+A container or test may be enabled or disabled on a particular version of the Java Runtime Environment (JRE) via  the @EnabledOnJre and @DisabledOnJre annotations. See ConditionalTestExecution.java.
+
+## 7.3 System propert conditions
+A container or test may be enabled or disabled based on the value of the named JVM system property via the @EnabledIfSystemProperty and @DisabledIfSystemProperty annotations. Note that the *matches* value is interpreted as a regular expression. See ConditionalTestExecution.java.
+
+## 7.4 Environment variable conditions
+A container or test may be enabled or disabled based on the value of the named environment variable from the underlying operating system via the @EnabledIfEnvironmentVariable and @DisabledIfEnvironmentVariable annotations. The value supplied via the matches attribute will be interpreted as a regular expression.
+
+## 7.5 Script-based conditions
+JUnit Jupiter provides the ability to either enable or disable a container or test depending on the evaluation of a script configured via the @EnabledIf or @DisabledIf annotation. Scripts can be written in JavaScript, Groovy, or any other scripting language for which there is support for the Java Scripting API, defined by JSR 223.
+
+Note that conditional test execution via @EnabledIf and @DisabledIf is currently an experimental feature. Also note that it is better to use dedicated built-in annotations for the logic of your script if it depends on e.g. OS, JRE Version, a JVM system property, or environment variable.
+
+If you use the same script-based condition multiple times then consider writing a dedicated ExecutionCondition extension in order to implement the condition in a faster, type-safe, and more maintainable manner.
