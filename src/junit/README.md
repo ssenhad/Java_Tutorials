@@ -1,3 +1,5 @@
+# JUNit 5 Notes
+
 # 1. Annotations
 JUnit Jupiter supports annotations for **configuring tests** and **extending the framework**. All core annotations are located in the org.junit.jupiter.api package in the junit-jupiter-api module. Find a summary of annotations in the JUnit 5 user guide, page 4.
 
