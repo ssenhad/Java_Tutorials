@@ -43,9 +43,9 @@ Note that conditional test execution via @EnabledIf and @DisabledIf is currently
 If you use the same script-based condition multiple times then consider writing a dedicated ExecutionCondition extension in order to implement the condition in a faster, type-safe, and more maintainable manner.
 
 # 8. Tags
-The **@Tags annotation** can be used to tag *test methods* and *test classes* in order to filter test discovery and execution.
+The **@Tags annotation** can be used to tag *test methods* and *test classes* in order to filter test discovery and execution. See Tags.java.
 
 ## 8.1 Tagging syntax rules
-* a tag must not be null or blank.
-* a trimmed (leading and trailing whitespace is removed) tag must not contain whitespac, ISO control characters, or reserved characters such as a comma, left or right parenthesis, "&", "|", or "!".
+* a tag must not be *null* or *blank*.
+* a *trimmed* (leading and trailing whitespace is removed) tag must not contain whitespac, ISO control characters, or reserved characters such as a comma, left or right parenthesis, "&", "|", or "!".
 
