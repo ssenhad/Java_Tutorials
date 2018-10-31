@@ -33,11 +33,19 @@ A container or test may be enabled or disabled on a particular version of the Ja
 A container or test may be enabled or disabled based on the value of the named JVM system property via the @EnabledIfSystemProperty and @DisabledIfSystemProperty annotations. Note that the *matches* value is interpreted as a regular expression. See ConditionalTestExecution.java.
 
 ## 7.4 Environment variable conditions
-A container or test may be enabled or disabled based on the value of the named environment variable from the underlying operating system via the @EnabledIfEnvironmentVariable and @DisabledIfEnvironmentVariable annotations. The value supplied via the matches attribute will be interpreted as a regular expression.
+A container or test may be enabled or disabled based on the value of the named environment variable from the underlying operating system via the @EnabledIfEnvironmentVariable and @DisabledIfEnvironmentVariable annotations. The value supplied via the matches attribute will be interpreted as a regular expression. See ConditionalTestExecution.java.
 
 ## 7.5 Script-based conditions
-JUnit Jupiter provides the ability to either enable or disable a container or test depending on the evaluation of a script configured via the @EnabledIf or @DisabledIf annotation. Scripts can be written in JavaScript, Groovy, or any other scripting language for which there is support for the Java Scripting API, defined by JSR 223.
+JUnit Jupiter provides the ability to either enable or disable a container or test depending on the evaluation of a script configured via the @EnabledIf or @DisabledIf annotation. Scripts can be written in JavaScript, Groovy, or any other scripting language for which there is support for the Java Scripting API, defined by JSR 223. See ConditionalTestExecution.java.
 
 Note that conditional test execution via @EnabledIf and @DisabledIf is currently an experimental feature. Also note that it is better to use dedicated built-in annotations for the logic of your script if it depends on e.g. OS, JRE Version, a JVM system property, or environment variable.
 
 If you use the same script-based condition multiple times then consider writing a dedicated ExecutionCondition extension in order to implement the condition in a faster, type-safe, and more maintainable manner.
+
+# 8. Tags
+The **@Tags annotation** can be used to tag *test methods* and *test classes* in order to filter test discovery and execution.
+
+## 8.1 Tagging syntax rules
+* a tag must not be null or blank.
+* a trimmed (leading and trailing whitespace is removed) tag must not contain whitespac, ISO control characters, or reserved characters such as a comma, left or right parenthesis, "&", "|", or "!".
+
