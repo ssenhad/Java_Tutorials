@@ -20,5 +20,8 @@ public class ExceptionTestingJUnit5Demo {
         });
         assertEquals("For input string: \"foo\"", expected.getMessage()); // we can also assert messages
       }
+      // parsing "42" fails becuase no exception was thrown
+      // parsing "bar" fails becuase the message is not what is expected
+      // parsing "foo" passes becuase the exception is thrown and the message is as expected
 
 }
