@@ -3,7 +3,11 @@ package parallelprogramming.arrays1b;
 import java.util.*;
 import java.util.function.*;
 
+import org.junit.jupiter.api.*;
+
 import static java.lang.reflect.Array.newInstance;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 /**
  * A generic array class implemented via a single contiguous buffer.
@@ -14,37 +18,139 @@ import static java.lang.reflect.Array.newInstance;
  */
 
 
-public class Array<E>
-       implements Iterable<E> {
-	
-	public static void main (String [] args) {
+public class MyArray<E>
+        implements Iterable<E> {
 
-	    // Test
-	
-		List<String> l1 = new ArrayList<>();
-		l1.add("1"); l1.add("2"); l1.add("3"); l1.add("4");
+    static class StringTestClass{
 
-		List<String> l2 = new ArrayList<>();
-		l2.add("a"); l2.add("b"); l2.add("c");
+        private MyArray<String> a1;
+        private List<String> l1, l2, l3;
 
-        List<String> l3 = new ArrayList<>();
-        l3.add("hello"); l3.add("world");
+        private void printAll(MyArray<? extends Object> a) {
+            System.out.println("\n======================================");
+            int element = 0;
+            for (Object o : a.mElementData){
+                System.out.println("["+element+"]" + o);
+                element += 1;
+            }
+            System.out.println("\n======================================");
+        }
 
-		Array<String> a1 = new Array<String>(4);
-        System.out.println("mSize: " + a1.mSize);
+        @BeforeEach
+        @Tag("initData")
+        void init() {
+            // make some test data
+            l1 = new ArrayList<>();
+            l1.add("1"); l1.add("2"); l1.add("3"); l1.add("4");
 
-		a1.addAll(l1);
-        System.out.println("mSize: " + a1.mSize);
+            l2 = new ArrayList<>();
+            l2.add("a"); l2.add("b"); l2.add("c");
 
-        a1.addAll(l2);
-        System.out.println("mSize: " + a1.mSize);
+            l3 = new ArrayList<>();
+            l3.add("hello"); l3.add("world");
 
-        a1.addAll(l3);
-        System.out.println("mSize: " + a1.mSize);
+            // make a new mElementData array
+            a1 = new MyArray<String>(4);
+        }
 
-        for (Object o : a1.mElementData) System.out.println(o);
-	}
-	
+        @AfterEach
+        @Tag("clearData")
+        void tearDown() {
+            l1.clear();
+            l2.clear();
+            l3.clear();
+            a1 = new MyArray<String>(4);
+        }
+
+        @Test
+        @Tag("addAll") // add all to empty array and then non-empty array
+        void addAllTest() {
+            a1.addAll(l1);
+            a1.addAll(l2);
+            a1.addAll(l3);
+
+            printAll(a1);
+
+            assertEquals(a1.mSize, 9);
+        }
+
+        @Test
+        @Tag("addTest1") // add to end of non empty MyArray
+        void addTest1(){
+
+            a1.addAll(l1);
+            printAll(a1);
+
+            a1.add("from add test 1");
+            a1.add("from add test 1");
+            a1.add("from add test 1");
+            a1.add("from add test 1");
+
+            printAll(a1);
+
+            assertEquals(a1.mElementData[4], "from add test 1"); // verify added to end
+            assertEquals(a1.mElementData[5], "from add test 1");
+            assertEquals(a1.mElementData[6], "from add test 1");
+            assertEquals(a1.mElementData[7], "from add test 1");
+            assertEquals(a1.mSize, 8);
+        }
+
+        @Test
+        @Tag("addTest2") // add to end of empty MyArray (i.e. the first element).
+        void addTest2(){
+            printAll(a1);
+
+            a1.add("from add test 2");
+            a1.add("from add test 2");
+            a1.add("from add test 2");
+            a1.add("from add test 2");
+            a1.add("from add test 2"); // tests growing array by 1 element and adding an item
+            System.out.println(a1.mSize);
+;
+            printAll(a1);
+
+            assertEquals(a1.mElementData[0], "from add test 2"); // verify added to end of empty list
+            assertEquals(a1.mElementData[0], "from add test 2");
+            assertEquals(a1.mElementData[0], "from add test 2");
+            assertEquals(a1.mElementData[0], "from add test 2");
+            assertEquals(a1.mSize, 5);
+
+        }
+
+        @Test
+        @Tag("sizeTest1") // empty
+        void sizeTest1(){
+            assertEquals(a1.mSize, 0);
+            assertEquals(a1.size(), 0);
+        }
+
+        @Test
+        @Tag("sizeTest2")
+        void sizeTest2(){
+            a1.add("hello");
+            a1.add("1");
+            a1.add("element x");
+            assertEquals(a1.size(), 3);
+        }
+
+/*
+        @Test
+        @Tag("")
+        void Test(){
+            a1.
+        }
+*/
+
+    }
+
+
+    public static void main (String [] args) {
+
+        StringTestClass stc = new StringTestClass();
+
+
+    }
+
     /**
      * The array buffer that stores all the array elements.  The
      * capacity is the length of this array buffer.
@@ -76,7 +182,7 @@ public class Array<E>
     /**
      * Constructs an empty array with an initial capacity of ten.
      */
-    public Array() {
+    public MyArray() {
         mElementData = sEMPTY_ELEMENTDATA;
     }
 
@@ -87,14 +193,14 @@ public class Array<E>
      * @throws IllegalArgumentException if the specified initial capacity
      *         is negative
      */
-    public Array(int initialCapacity) {
+    public MyArray(int initialCapacity) {
         // TODO -- you fill in here.
-    	if (initialCapacity < 0) throw new IllegalArgumentException();
-    	else {
-    		mElementData = new Object[initialCapacity];
-    		mSize = 0; // number of elements in array and first open cell
-    	}
-    	
+        if (initialCapacity < 0) throw new IllegalArgumentException();
+        else {
+            mElementData = new Object[initialCapacity];
+            mSize = 0; // number of elements in array and first open cell
+        }
+
     }
 
     /**
@@ -105,10 +211,9 @@ public class Array<E>
      * @param c the collection whose elements are to be placed into this array
      * @throws NullPointerException if the specified collection is null
      */
-    public Array(Collection<? extends E> c) {
-        // TODO -- you fill in here.
-    	mElementData = c.toArray();
-    	mSize = mElementData.length; // (no free space in mElementData)
+    public MyArray(Collection<? extends E> c) {
+        mElementData = c.toArray();
+        mSize = mElementData.length; // (no free space in mElementData)
     }
 
     /**
@@ -117,16 +222,15 @@ public class Array<E>
      * @return <tt>true</tt> if this collection contains no elements
      */
     public boolean isEmpty() {
-        // TODO -- you fill in here.
-    	boolean empty = true;
-    	for (Object o : mElementData)
-    		if (!o.equals(null)) { // o.equals(null)
-    		    empty = false;
-    		    break;
+        boolean empty = true;
+        for (Object o : mElementData)
+            if (!o.equals(null)) { // o.equals(null)
+                empty = false;
+                break;
             }
-    	return empty && mSize == 0;
+        return empty && mSize == 0;
     }
-    
+
     /**
      * Returns the number of elements in this collection.  If this collection
      * contains more than <tt>Integer.MAX_VALUE</tt> elements, returns
@@ -135,16 +239,21 @@ public class Array<E>
      * @return the number of elements in this collection
      */
     public int size() {
-        // TODO -- you fill in here.
-    	int size = 0;
-    	do {
-            for (Object o : this)
-                if (o != null) size += 1;
-                else if (o == null) System.out.println("... size() method found a null"); // o.equals(null)
-        } while(size <= Integer.MAX_VALUE);
+        int size = 0;
+            for (Object o : mElementData) {
+                if (o != null) {
+                    size += 1;
+                    if(size == Integer.MAX_VALUE) {
+                        size = Integer.MAX_VALUE;
+                        break;
+                    }
+                } else {
+                    break;
+                }
+            }
         return size;
     }
-    
+
     /**
      * Returns the index of the first occurrence of the specified
      * element in this array, or -1 if this array does not contain the
@@ -156,65 +265,20 @@ public class Array<E>
      */
     public int indexOf(Object o) {
         // TODO -- you fill in here.
-    	boolean found = false;
-    	int index = -1, counter = 0;
-    	do {
-    		for (Object x : mElementData) // iterate over array while not found
-    			if (x == o) {
-    				index = counter; // store index value of first occurrence
-    				found = true; // break out the do-while
-    			} else {
-    				counter++;
-    			}
-    	} while (!found);
-    	return index;
+        boolean found = false;
+        int index = -1, counter = 0;
+        do {
+            for (Object x : mElementData) // iterate over array while not found
+                if (x == o) {
+                    index = counter; // store index value of first occurrence
+                    found = true; // break out the do-while
+                } else {
+                    counter++;
+                }
+        } while (!found);
+        return index;
     }
 
-    /*
-           boolean changed = false;
-
-        if (c == null) throw new NullPointerException(); // null collection
-        else if (!c.isEmpty()) {
-
-            int nullCounter = 0;
-            for (Object i : mElementData) {
-                if (i==null) {
-                    nullCounter += 1;
-                }
-            }
-
-            // number of elements in collection c
-            int cSize = c.size();
-
-            // create a temporary array and grow by collection size + mSize - nullCounter
-            Object[] newList = new Object[mSize + cSize - nullCounter];
-
-
-            // copy over elements in mElementData array, ignoring nulls
-            int iter1 = 0;
-            for (Object i : mElementData) {
-                if (i != null) {
-                    newList[iter1] = i;
-                    iter1 += 1;
-                }
-            }
-
-            // iterate over collection c and add each element to newList temporary array
-            Iterator<? extends E> iterator = c.iterator(); // iterator
-            int iter2 = mSize - nullCounter;
-            while (iterator.hasNext()) {
-                newList[iter2] = iterator.next();
-                iter2 += 1;
-            }
-
-            // set mELementData to newList, and set its mSize
-            mElementData = newList;
-            mSize = newList.length;
-
-            changed = true;
-        }
-        return changed;
-     */
 
     /**
      * Appends all of the elements in the specified collection to the
@@ -230,7 +294,6 @@ public class Array<E>
      * @throws NullPointerException if the specified collection is null
      */
     public boolean addAll(Collection<? extends E> c) {
-        // TODO -- you fill in here.
         boolean changed = false;
         if(c == null) throw new NullPointerException();
         else {
@@ -238,37 +301,52 @@ public class Array<E>
                 int aLen = mElementData.length;
                 int bLen = c.size();
 
+                // find the first null, and copy the new items to be added from that index
+                int fn_index = 0;
+                while(mElementData[fn_index] != null) {
+                    fn_index++;
+                }
+
                 // if mElementData has data inside it, copy everything from 0..mSize
                 if (mSize == aLen){
-                    //ensureCapacityInternal(c.size()); no need for this
+
+                    //ensureCapacityInternal(c.size()); no need for this with arraycopy
+
                     // Create a new array of same type to hold all the elements
                     Object[] new_mElementData = new Object[mSize + c.size()];
 
                     // Copy the contents of mElementData and collection c into a new array
-                    System.arraycopy(mElementData, 0, new_mElementData, 0, aLen);
-                    System.arraycopy(c.toArray(), 0, new_mElementData, aLen, bLen);
+                    System.arraycopy(mElementData, 0, new_mElementData, 0, fn_index);
+                    System.arraycopy(c.toArray(), 0, new_mElementData, fn_index, bLen);
 
                     // Reinitialize mElementData, mSize
                     mElementData = new_mElementData;
                     mSize = mElementData.length;
 
                     changed = true;
-                } else if(mSize == 0 || mSize < mElementData.length) {
-                    //ensureCapacityInternal(c.size()); no need for this
-                    Object[] new_mElementData = new Object[mSize + c.size()];
-                    System.arraycopy(mElementData, 0, new_mElementData, 0, mElementData.length);
-                    System.arraycopy(c.toArray(), 0, new_mElementData, mSize, c.size());
+                }
+                else if(mSize == 0 || mSize < mElementData.length) {
+
+                    //ensureCapacityInternal(c.size()); no need for this with arraycopy
+
+                    Object[] new_mElementData = new Object[(mSize + c.size()) * 2]; // array size doubles
+                    System.arraycopy(mElementData, 0, new_mElementData, 0, fn_index);
+                    System.arraycopy(c.toArray(), 0, new_mElementData, fn_index, bLen);
 
                     mElementData = new_mElementData;
-                    mSize = mElementData.length;
+                    int i = 0;
+                    while(mElementData[i] != null) i++;
+                    mSize = i;
 
                     changed = true;
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
-                if(changed == true) System.out.println("... Collection appended successfully");
-                else if (changed ==  false) System.out.println("... Collection append unsuccessful");
+                if(changed == true) System.out.println("\n======================================\n" +
+                        "... Collection appended successfully");
+                else if (changed ==  false) System.out.println("\n======================================\n" +
+                        "... Collection append unsuccessful");
             }
         }
         return changed;
@@ -287,7 +365,7 @@ public class Array<E>
      * @return <tt>true</tt> if this array changed as a result of the call
      * @throws NullPointerException if the specified collection is null
      */
-    public boolean addAll(Array<E> a) {
+    public boolean addAll(MyArray<E> a) {
         // TODO -- you fill in here.
         boolean changed = false;
         if(a == null) throw new NullPointerException();
@@ -401,13 +479,39 @@ public class Array<E>
      */
     public boolean add(E element) {
         // TODO -- you fill in here.
-        Object[] newArr = Arrays.copyOf(mElementData, mElementData.length + 1);
-        newArr[newArr.length] = element;
-        mElementData = newArr;
-        mSize = mSize + 1;
-        return true;
+        boolean changed = false;
+        try{
+
+            // no free space, so grow the array by one and add the element
+            if(mElementData[0] != null && mSize == mElementData.length){
+                Object[] new_mElementData = new Object[mElementData.length + 1];
+                System.arraycopy(mElementData, 0, new_mElementData, 0, new_mElementData.length-1);
+                new_mElementData[new_mElementData.length - 1] = element;
+                mElementData = new_mElementData;
+                mSize += 1;
+
+            } else if (mElementData[0] == null){
+                mElementData[0] = element;
+                mSize += 1;
+            } else {
+
+                // find the index of the first null/last item/end of the array
+                int i = mElementData.length - 1;
+                while(mElementData[i] == null) {
+                    i -= 1;
+                }
+                // add the item to the end
+                mElementData[i + 1] = element;
+                mSize += 1;
+            }
+            changed = true;
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+            changed = false;
+        }
+        return changed;
     }
-    
+
     /**
      * Ensure the array is large enough to hold @a minCapacity
      * elements.  The array will be expanded if necessary.
@@ -468,15 +572,15 @@ public class Array<E>
         if (a.length < mSize)
             // Make a new array of a's runtime type, but my contents:
             return (T[]) Arrays.copyOf(mElementData,
-                                       mSize,
-                                       a.getClass());
+                    mSize,
+                    a.getClass());
 
         //noinspection SuspiciousSystemArraycopy
         System.arraycopy(mElementData,
-                         0,
-                         a,
-                         0,
-                         mSize);
+                0,
+                a,
+                0,
+                mSize);
 
         if (a.length > mSize)
             a[mSize] = null;
@@ -499,8 +603,8 @@ public class Array<E>
      * This class defines an iterator over the elements in an Array in
      * proper sequence.
      */
-    private class ArrayIterator 
-           implements Iterator<E> {
+    private class ArrayIterator
+            implements Iterator<E> {
         /**
          * Current position in the Array (defaults to 0).
          */
@@ -513,13 +617,13 @@ public class Array<E>
         // TODO - you fill in here.
         int lastReturnedIndex = -1;
 
-        /** 
+        /**
          * @return True if the iteration has more elements that
          * haven't been iterated through yet, else false.
          */
         @Override
         public boolean hasNext() {
-        // TODO - you fill in here.
+            // TODO - you fill in here.
             boolean more;
 
             if(currIndex < mElementData.length - 1){
@@ -566,7 +670,7 @@ public class Array<E>
         public void remove() {
             // TODO - you fill in here
             try {
-                Array.this.remove(this.lastReturnedIndex);
+                MyArray.this.remove(this.lastReturnedIndex);
             } catch (IllegalStateException e) {
                 e.printStackTrace();
             }
